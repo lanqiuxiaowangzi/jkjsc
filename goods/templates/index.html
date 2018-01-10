@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block main %}
+    <div class="classes">
+        <ul class="classes-items">
+            {% for category in categorys %}
+                <li class="items  {% if current_categoryid == category.id %}active{% endif %} "><a
+                        href="/category/{{ category.id }}">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="goods-model">
+        <div class="goods-content">
+          {% for good in goods %}
+          <div class="good">
+                <a href="/{{ good.category.name }}/goods/{{ good.id }}">
+                    <img src="{{ MEDIA_URL }}{{ good.img }}" width="285px" height="285px">
+                    <p class="name">{{ good.name }}</p>
+                    <div class="price">
+                        <i>￥</i>
+                        <p class="big">{{ good.price }}</p>
+                        <s>￥{{ good.oldprice }}</s>
+                    </div>
+                    <div class="sale">
+                        特卖
+                    </div>
+                </a>
+            </div>
+          {% endfor %}
+        </div>
+    </div>
+    <div id="pager" style="text-align: center; font-size: 16px; overflow: hidden; margin-top: 10px;">
+      {% if page.has_previous %}
+     <a href="/category/{{ current_categoryid }}/page/{{ page.previous_page_number }}" style="display: inline-block; padding: 5px; margin: 5px;">上一页</a>
+    {% endif %}
+    {% if page.has_next %}
+     <a href="/category/{{ current_categoryid }}/page/{{ page.next_page_number }}" style="display: inline-block; padding: 5px; margin: 5px;">下一页</a>
+    {% endif %}
+
+
+
+    </div>
+{% endblock main %}
+{% block footer %}
+    <script>
+        $('#pager').css({'text-align': 'center', 'font-size': '16px', 'overflow': 'hidden', 'margin-top': '10px'})
+        $('#pager a').css({'display': 'inline-block', 'padding': '5px', 'margin': '5px'})
+    </script>
+{% endblock footer %}

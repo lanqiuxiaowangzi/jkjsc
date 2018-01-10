@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% block main %}
+    <div class="Bott">
+			<div class="wrapper clearfix" style="margin: 0 auto">
+				<div class="zuo fl" style="margin-left: 100px">
+					<h3>
+						<a href="/"><img src="/static/img/tx.png"></a>
+						<p class="clearfix"><span class="fl">[{{ user.account }}]</span><span class="fr">[退出登录]</span></p>
+					</h3>
+					<div>
+						<ul>
+							<li><a href="#">我的订单</a></li>
+						</ul>
+						<ul>
+							<li><a href="/user/address/">地址管理</a></li>
+						</ul>
+
+					</div>
+				</div>
+				<div class="you fl">
+
+    <h2>收货地址</h2>
+    <div class="add">
+        <div onclick="add()">
+            <a href="javascript:void(0);"  id="addxad"><img src="/static/img/jia.png"></a>
+            <span>添加新地址</span>
+        </div>
+
+
+    </div>
+
+				</div>
+
+                <div class="mask" style="display: none;"></div>
+                <div class="adddz" style="display: none;">
+			    <form action="http://127.0.0.1:8000/address/#" method="get">
+				<input type="text" placeholder="姓名" name="name" class="on">
+				<input type="text" placeholder="手机号" name="phone">
+				<div class="city">
+					<select name="provinces">
+                    {% for province in provinces %}
+                        <option value="{{ province.id }}">{{ province.name }}</option>
+                    {% endfor %}
+
+
+					</select>
+					<select name="citys">
+
+                            <option>市辖区</option>
+
+					</select>
+					<select name="areas">
+                            <option value="110101">东城区</option>
+
+					</select>
+				</div>
+				<textarea name="" rows="" cols="" class="address_details" placeholder="详细地址"></textarea>
+				<div class="bc">
+					<input type="button" onclick="save_address()" value="保存">
+					<input type="button" value="取消">
+				</div>
+			</form>
+		     </div>
+		        <div class="readd">
+			<form action="http://127.0.0.1:8000/address/#" method="get">
+				<input type="text" class="on" value="六六六">
+				<input type="text" value="157****0022">
+				<div class="city">
+					<select name="">
+						<option value="省份/自治区">河北省</option>
+					</select>
+					<select>
+						<option value="城市/地区">唐山市</option>
+					</select>
+					<select>
+						<option value="区/县">路北区</option>
+					</select>
+					<select>
+						<option value="配送区域">火炬路</option>
+					</select>
+				</div>
+				<textarea name="" rows="" cols="" placeholder="详细地址">高新产业园</textarea>
+				<input type="text" placeholder="邮政编码" value="063000">
+				<div class="bc">
+					<input type="button" value="保存" onclick="save()">
+					<input type="button" value="取消" class="cancel">
+				</div>
+			</form>
+		</div>
+            </div>
+</div>
+    {% csrf_token %}
+{% endblock main %}
+{%block footer %}
+    <script>
+    $('.logout').click(function () {
+
+        $.ajax({
+            method:'post',
+            url:'/user/logout/',
+            data:'csrfmiddlewaretoken='+$('input[name="csrfmiddlewaretoken"]').val(),
+            success:function(data){
+                window.location='/user/login'
+            }
+        })
+    })
+    $('.mask').click(function () {
+        $(this).css('display','none')
+        $('.adddz').css('display','none')
+    })
+    function add() {
+        $('.mask').css('display','block')
+        $('.adddz').css('display','block')
+    }
+    $('select[name="provinces"]').change(function(){
+        var provinceId = $(this).val() <!--获得是select选中的option的value-->
+        $.ajax({
+            method:'post',
+            url:'/user/address/',
+            data:'provinceId='+provinceId+'&type=1&csrfmiddlewaretoken='+$('input[name="csrfmiddlewaretoken"]').val(),
+            success:function(data){
+                console.log(data.citys)
+                var citys_parent = $('select[name="citys"]')
+                citys_parent.empty()
+                console.log('真心够了')
+                for (var index=0;index < data.citys.length;index++){
+                    var city = data.citys[index]
+                     var r='<option value="'+city.id+'">'+city.name+'</option>'
+                    $(r).appendTo(citys_parent)
+                }
+                var areas_parent = $('select[name="areas"]')
+                areas_parent.empty()
+                 for (var index=0;index < data.areas.length;index++){
+                    var city = data.areas[index]
+                     var r='<option value="'+city.id+'">'+city.name+'</option>'
+                    $(r).appendTo(areas_parent)
+                }
+            }
+        })
+    })
+    $('select[name="citys"]').change(function(){
+        var cityid = $(this).val()
+        $.ajax({
+            method:'post',
+             url:'/user/address/',
+            data:'cityId='+cityid+'&type=2&csrfmiddlewaretoken='+$('input[name="csrfmiddlewaretoken"]').val(),
+            success:function(data){
+                 var areas_parent = $('select[name="areas"]')
+                areas_parent.empty()
+                $.each(data.areas,function(index,area){
+                     var r='<option value="'+area.id+'">'+area.name+'</option>'
+                    $(r).appendTo(areas_parent)
+                })
+            }
+        })
+    })
+    $('.cancel').click(function(){
+          $('.mask').css('display','none')
+        $('.adddz').css('display','none')
+    })
+    function save_address() {
+       var name =$('input[name="name"]').val()
+       var phone =$('input[name="phone"]').val()
+       var province =$('select[name="provinces"] option:selected').text()
+       var city =$('select[name="citys"] option:selected').text()
+       var area =$('select[name="areas"] option:selected' ).text()
+       var details_address =$('.address_details').val()
+        var address = province+','+city+','+area+','+details_address
+        $.ajax({
+            async:false,
+            method:'post',
+            url:'/user/address/',
+            data:'type=3&address='+address+'&name='+name+'&phone='+phone+
+            '&csrfmiddlewaretoken='+$('input[name=\"csrfmiddlewaretoken\"]').val(),
+            success:function(data){
+            $.each(data,function(index,d){
+            $('.add').append($(eval('"'+d+'"')))
+            })
+            }
+        })
+        $('.mask').css('display','none')
+        $('.adddz').css('display','none')
+    }
+
+    </script>
+{% endblock footer %}

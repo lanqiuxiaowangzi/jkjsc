@@ -1,0 +1,21 @@
+[
+  {
+    "title":"今天北京很冷",
+    "visitedcount":10,
+    "desc":"今天冻死了40人了.....",
+    "details":"htmlsadsadsadsadsadasd",
+    "author":{
+      "name":"新华网",
+      "img":"asdsada",
+      "authorid":"asdsadsadsadsadasdad"
+    },
+    "commmect":[
+      {
+        "nickname":"yuyausd",
+        "img":"sadsadsad",
+        "content":"asdsadasdsd"
+      }
+    ]
+  }
+
+]

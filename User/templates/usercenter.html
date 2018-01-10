@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block main %}
+    {% csrf_token %}
+    <div class="Bott">
+			<div class="wrapper clearfix" style="margin: 0 auto">
+				<div class="zuo fl" style="margin-left: 100px">
+					<h3>
+						<a href="/"><img src="/static/img/tx.png"></a>
+						<p class="clearfix"><span class="fl">[{{ user.account }}]</span><span class="fr logout">[退出登录]</span></p>
+					</h3>
+					<div>
+						<ul>
+							<li><a href="#">我的订单</a></li>
+						</ul>
+						<ul>
+							<li><a href="/user/address/">地址管理</a></li>
+						</ul>
+
+					</div>
+				</div>
+				<div class="you fl">
+
+    <div class="tx clearfix">
+						<div class="fl clearfix">
+							<a href="#" class="fl"><img src="/static/img/tx.png"></a>
+							<p class="fl"><span>六六六</span><a href="#">修改个人信息&gt;</a></p>
+						</div>
+						<div class="fr">绑定邮箱：12****4@**.com</div>
+					</div>
+    <div class="bott">
+						<div class="clearfix">
+							<a href="#" class="fl"><img src="/static/img/gxin1.jpg"></a>
+							<p class="fl"><span>待支付的订单：<strong>0</strong></span>
+								<a href="#">查看待支付订单&gt;</a>
+							</p>
+						</div>
+						<div class="clearfix">
+							<a href="#" class="fl"><img src="/static/img/gxin2.jpg"></a>
+							<p class="fl"><span>待收货的订单：<strong>0</strong></span>
+								<a href="#">查看待收货订单&gt;</a>
+							</p>
+						</div>
+					</div>
+
+				</div>
+
+            </div>
+            </div>
+
+{% endblock main %}
+{%block footer %}
+    <script>
+    $('.logout').click(function () {
+
+        $.ajax({
+            method:'post',
+            url:'/user/logout/',
+            data:'csrfmiddlewaretoken='+$('input[name="csrfmiddlewaretoken"]').val(),
+            success:function(data){
+                window.location='/user/login'
+            }
+        })
+    })
+    </script>
+{% endblock footer %}
