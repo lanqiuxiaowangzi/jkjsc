@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'goods',
     'User',
-    'cart'
+    'cart',
+    'order'
 ]
 
 # from django.middleware.common import CommonMiddleware

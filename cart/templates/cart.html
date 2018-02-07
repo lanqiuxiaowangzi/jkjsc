@@ -22,7 +22,7 @@
             <div class="order_content">
 
             {% for cartitem in cartitems %}
-                     <ul style="position: relative" class="order_lists" >
+                     <ul style="position: relative" class="order_lists" goodsid="{{ cartitem.goods.id }}" colorid="{{ cartitem.color.id }}" sizeid="{{ cartitem.size.id }}">
                         <li class="list_chk">
                             <input type="checkbox" id="checkbox_2" class="son_check" style="display: inline-block;position:absolute;left: 21px;top: 54px">
 
@@ -180,6 +180,21 @@
 {#        alert($(this).attr('href'))#}
         var link = $(this).attr('href')
         $(this).attr('href',link+"?redirct=cart")
+    })
+    $('#jiesuan').click(function () {
+        var cks = $('.son_check')
+        var cartitem = []
+        $.each(cks,function (index,ck) {
+            if ($(ck).prop('checked')){
+                var goodsid = $(ck).parents('.order_lists').attr('goodsid')
+                var colorid = $(ck).parents('.order_lists').attr('colorid')
+                var sizeid = $(ck).parents('.order_lists').attr('sizeid')
+                cartitem.push(JSON.stringify({'goodsid':goodsid,'colorid':colorid,'sizeid':sizeid}))
+            }
+        })
+            if (cartitem.length == 0) return
+            var url = '/order/?cartitems='+cartitem
+            $(this).attr('href',url)
     })
     </script>
 {% endblock footer %}

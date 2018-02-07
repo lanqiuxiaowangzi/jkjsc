@@ -82,6 +82,8 @@ class DBCartManager(CartManager):
     def update(self,goodsid,colorid,sizeid,step,*args,**kwargs):
         self.user.cartitem_set.filter(goodsid=goodsid, colorid=colorid, sizeid=sizeid).update(
             count=F('count') + int(step))
+    def get_cart_item(self,goodsid,colorid,sizeid,*args,**kwargs):
+        return self.user.cartitem_set.get(goodsid=goodsid,sizeid=sizeid,colorid=colorid)
 # 工厂模式
 def get_cart_manager(request):
     #根据当前的状态，返回
